@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lena</title>
+<style>
+  /* Reset & Base */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.6;
+    color: #1f2328;
+    background: #ffffff;
+  }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header {
+    background: #24292f;
+    color: #ffffff;
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 24px; }
+  .header-logo { font-size: 18px; font-weight: 600; color: #ffffff; }
+  .header-logo:hover { text-decoration: none; opacity: 0.85; }
+  .header-nav { display: flex; gap: 16px; }
+  .header-nav a { color: #ffffff; font-size: 14px; opacity: 0.85; transition: opacity 0.15s; }
+  .header-nav a:hover { opacity: 1; text-decoration: none; }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  .lang-btn:hover { border-color: rgba(255,255,255,0.8); }
+
+  /* Container */
+  .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero { padding: 80px 0 48px; border-bottom: 1px solid #d0d7de; }
+  .hero h1 { font-size: 36px; font-weight: 600; margin-bottom: 8px; }
+  .hero p { font-size: 18px; color: #656d76; }
+
+  /* Sections */
+  section { padding: 48px 0; border-bottom: 1px solid #d0d7de; }
+  section:last-of-type { border-bottom: none; }
+  .section-title { font-size: 24px; font-weight: 600; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid #d0d7de; }
+
+  /* About */
+  .about-text p { margin-bottom: 12px; max-width: 640px; }
+
+  /* Projects */
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .project-card {
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 20px;
+    transition: border-color 0.15s;
+  }
+  .project-card:hover { border-color: #0969da; }
+  .project-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .project-card h3 a { color: #0969da; }
+  .project-card p { font-size: 14px; color: #656d76; margin-bottom: 10px; }
+  .project-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .project-tags span {
+    font-size: 12px;
+    color: #656d76;
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 12px;
+    padding: 2px 10px;
+  }
+
+  /* Blog */
+  .blog-list { list-style: none; }
+  .blog-item { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+  .blog-item:first-child { padding-top: 0; }
+  .blog-item:last-child { border-bottom: none; }
+  .blog-item h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .blog-item h3 a { color: #0969da; }
+  .blog-item .blog-date { font-size: 13px; color: #656d76; }
+  .blog-item .blog-excerpt { font-size: 14px; color: #656d76; margin-top: 4px; }
+
+  /* Footer */
+  .footer { padding: 32px 24px; border-top: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .footer-copy { font-size: 13px; color: #656d76; }
+  .footer-links { display: flex; gap: 16px; }
+  .footer-links a { font-size: 13px; color: #656d76; }
+  .footer-links a:hover { color: #0969da; text-decoration: none; }
+
+  /* Language visibility */
+  [lang]:not(html) { display: none; }
+  html[data-lang="en"] [lang="en"] { display: revert; }
+  html[data-lang="zh"] [lang="zh"] { display: revert; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero { padding: 56px 0 36px; }
+    .hero h1 { font-size: 28px; }
+    .hero p { font-size: 16px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .header-nav { gap: 10px; }
+    .header-nav a { font-size: 13px; }
+    section { padding: 36px 0; }
+  }
+  @media (max-width: 480px) {
+    .header { padding: 0 16px; }
+    .container { padding: 0 16px; }
+    .hero h1 { font-size: 24px; }
+    .section-title { font-size: 20px; }
+    .footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <a href="#" class="header-logo">Lena</a>
+    <nav class="header-nav">
+      <a href="#about" data-zh="{{ site.nav.about.zh }}" data-en="{{ site.nav.about.en }}">{{ site.nav.about.en }}</a>
+      <a href="#projects" data-zh="{{ site.nav.projects.zh }}" data-en="{{ site.nav.projects.en }}">{{ site.nav.projects.en }}</a>
+      <a href="#blog" data-zh="{{ site.nav.blog.zh }}" data-en="{{ site.nav.blog.en }}">{{ site.nav.blog.en }}</a>
+    </nav>
+  </div>
+  <button class="lang-btn" id="langToggle" aria-label="Toggle language">{{ site.langBtn.en }}</button>
+</header>
+
+{{ content | safe }}
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-copy">
+    <span lang="en">{{ site.footer.copy.en }}</span>
+    <span lang="zh">{{ site.footer.copy.zh }}</span>
+  </div>
+  <div class="footer-links">
+    {% for link in site.footer.links %}
+    <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }}</a>
+    {% endfor %}
+  </div>
+</footer>
+
+<script>
+(function() {
+  var html = document.documentElement;
+  var btn = document.getElementById('langToggle');
+  var navLinks = document.querySelectorAll('.header-nav a');
+
+  function setLang(lang) {
+    html.setAttribute('data-lang', lang);
+    btn.textContent = lang === 'en' ? '{{ site.langBtn.en }}' : '{{ site.langBtn.zh }}';
+    try { localStorage.setItem('lena-lang', lang); } catch(e) {}
+  }
+
+  // Load saved language
+  var saved = 'en';
+  try { saved = localStorage.getItem('lena-lang') || 'en'; } catch(e) {}
+  setLang(saved);
+
+  btn.addEventListener('click', function() {
+    var next = html.getAttribute('data-lang') === 'en' ? 'zh' : 'en';
+    setLang(next);
+  });
+
+  // Update nav link text on lang change
+  var observer = new MutationObserver(function() {
+    var lang = html.getAttribute('data-lang');
+    navLinks.forEach(function(link) {
+      link.textContent = link.getAttribute('data-' + lang);
+    });
+  });
+  observer.observe(html, { attributes: true, attributeFilter: ['data-lang'] });
+
+  // Initial nav text
+  var initLang = html.getAttribute('data-lang');
+  navLinks.forEach(function(link) {
+    link.textContent = link.getAttribute('data-' + initLang);
+  });
+})();
+</script>
+
+</body>
+</html>

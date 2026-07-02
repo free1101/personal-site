@@ -1,0 +1,68 @@
+---
+layout: base.njk
+---
+
+<!-- Hero -->
+<div class="hero">
+  <div class="container">
+    <h1>{{ site.hero.name }}</h1>
+    <p lang="en">{{ site.hero.tagline.en }}</p>
+    <p lang="zh">{{ site.hero.tagline.zh }}</p>
+  </div>
+</div>
+
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <h2 class="section-title" lang="en">{{ site.aboutTitle.en }}</h2>
+    <h2 class="section-title" lang="zh">{{ site.aboutTitle.zh }}</h2>
+    <div class="about-text">
+      {% for para in site.aboutParagraphs %}
+      <p lang="en">{{ para.en }}</p>
+      <p lang="zh">{{ para.zh }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects">
+  <div class="container">
+    <h2 class="section-title" lang="en">{{ site.projectsTitle.en }}</h2>
+    <h2 class="section-title" lang="zh">{{ site.projectsTitle.zh }}</h2>
+    <div class="projects-grid">
+      {% for proj in collections.projects %}
+      <div class="project-card">
+        <h3><a href="#" lang="en">{{ proj.data.title_en }}</a><a href="#" lang="zh">{{ proj.data.title_zh }}</a></h3>
+        <p lang="en">{{ proj.data.excerpt_en }}</p>
+        <p lang="zh">{{ proj.data.excerpt_zh }}</p>
+        <div class="project-tags">
+          {% for tag in proj.data.tags %}
+          {% if tag !== 'projects' and tag !== 'posts' %}
+          <span>{{ tag }}</span>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Blog -->
+<section id="blog">
+  <div class="container">
+    <h2 class="section-title" lang="en">{{ site.blogTitle.en }}</h2>
+    <h2 class="section-title" lang="zh">{{ site.blogTitle.zh }}</h2>
+    <ul class="blog-list">
+      {% for post in collections.posts %}
+      <li class="blog-item">
+        <h3><a href="#" lang="en">{{ post.data.title_en }}</a><a href="#" lang="zh">{{ post.data.title_zh }}</a></h3>
+        <div class="blog-date">{{ post.data.date | formatDate }}</div>
+        <p class="blog-excerpt" lang="en">{{ post.data.excerpt_en }}</p>
+        <p class="blog-excerpt" lang="zh">{{ post.data.excerpt_zh }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>

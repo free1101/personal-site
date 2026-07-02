@@ -28,4 +28,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: e6fed4879235c1f4630eb134f95028bc
-          command: pages deploy _site --project-name=personal-site
+          command: pages deploy _site --project-name=lena-personal-site

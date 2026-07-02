@@ -1,0 +1,1259 @@
+---
+layout: false
+permalink: /time-class.html
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>做时间的小主人 — 儿童时间管理小课堂</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400..700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   CSS CUSTOM PROPERTIES — Daisy Days Theme
+   =========================================== */
+:root {
+  --cream: #F5F0E6;
+  --turquoise: #7ECDC0;
+  --soft-pink: #F7C8D4;
+  --butter: #FDE68A;
+  --mint: #A8E6CF;
+  --lavender: #D4A5E8;
+  --peach: #FFCBA4;
+  --sky: #A8D8F0;
+  --coral: #F8635F;
+  --text-dark: #2D2D2D;
+  --text-muted: #6B6B6B;
+  --white: #FFFFFF;
+
+  --font-display: 'Fredoka One', 'ZCOOL XiaoWei', cursive;
+  --font-body: 'Quicksand', sans-serif;
+
+  --shadow-default: 6px 6px 0 #2D2D2D;
+  --shadow-small: 4px 4px 0 #2D2D2D;
+  --text-shadow: 3px 3px 0 #2D2D2D;
+  --text-shadow-soft: 3px 3px 0 rgba(0,0,0,0.2);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ===========================================
+   FIXED 16:9 STAGE
+   =========================================== */
+html, body { width:100%; height:100%; margin:0; overflow:hidden; background:var(--cream); cursor:none; }
+.deck-viewport { position:fixed; inset:0; overflow:hidden; background:var(--cream); cursor:none; }
+.deck-stage { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:hidden; transform-origin:0 0; background:var(--cream); }
+
+.slide {
+  position:absolute; inset:0;
+  width:1920px; height:1080px;
+  overflow:hidden; display:block;
+  visibility:hidden; opacity:0; pointer-events:none;
+  background:var(--cream);
+  transition: opacity 0.5s var(--ease-out);
+}
+.slide.active, .slide.visible {
+  visibility:visible; opacity:1; pointer-events:auto; z-index:1;
+}
+
+img, video, canvas, svg { max-width:100%; max-height:100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* ===========================================
+   GLOBAL RESET
+   =========================================== */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+/* ===========================================
+   CUSTOM CURSOR
+   =========================================== */
+#cursor-dot {
+  position:fixed; z-index:99999;
+  pointer-events:none;
+  width: 24px; height: 24px;
+  border-radius:50%;
+  background: var(--coral);
+  border: 3px solid var(--text-dark);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.15s, height 0.15s, background 0.15s;
+}
+#cursor-dot.clicking { width:36px; height:36px; background:var(--butter); }
+#cursor-dot.hover-card { width:40px; height:40px; background:var(--turquoise); }
+
+/* Cursor trail particles */
+.cursor-particle {
+  position:fixed; z-index:99998;
+  pointer-events:none;
+  border-radius:50%;
+  animation: particle-fade 0.7s ease-out forwards;
+}
+@keyframes particle-fade {
+  0% { transform:translate(-50%,-50%) scale(1); opacity:1; }
+  100% { transform:translate(-50%,-50%) scale(0); opacity:0; }
+}
+
+/* Click burst */
+.click-burst {
+  position:fixed; z-index:99997;
+  pointer-events:none;
+  width:0; height:0;
+  border-radius:50%;
+  animation: burst-pop 0.6s ease-out forwards;
+}
+@keyframes burst-pop {
+  0% { width:0; height:0; opacity:1; }
+  100% { width:120px; height:120px; margin-left:-60px; margin-top:-60px; opacity:0; }
+}
+
+/* ===========================================
+   DECORATION LAYER
+   =========================================== */
+.decor { position:absolute; pointer-events:none; z-index:1; }
+
+/* ===========================================
+   SLIDE BACKGROUNDS
+   =========================================== */
+.slide-bg-cream    { background: var(--cream); }
+.slide-bg-pink     { background: var(--soft-pink); }
+.slide-bg-mint     { background: var(--mint); }
+.slide-bg-sky      { background: var(--sky); }
+.slide-bg-butter   { background: var(--butter); }
+.slide-bg-lavender { background: var(--lavender); }
+.slide-bg-turquoise{ background: var(--turquoise); }
+
+/* ===========================================
+   CONTENT WRAPPER
+   =========================================== */
+.content { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:60px; }
+
+/* ===========================================
+   HERO CARD
+   =========================================== */
+.hero-card {
+  background:var(--white); border:3px solid var(--text-dark);
+  border-radius:28px; box-shadow:var(--shadow-default);
+  padding:48px 56px; text-align:center; max-width:820px;
+  transition: transform 0.3s var(--ease-bounce);
+}
+.hero-card:hover { transform: scale(1.03); }
+.hero-card h1 {
+  font-family:var(--font-display); font-size:96px;
+  color:var(--text-dark); line-height:1.15;
+}
+.hero-card h1 .accent { color:var(--coral); animation: color-pop 2s ease-in-out infinite; }
+@keyframes color-pop {
+  0%,100% { color:var(--coral); }
+  50% { color:#ff4444; }
+}
+.hero-card .subtitle {
+  font-family:var(--font-body); font-size:28px; font-weight:600;
+  color:var(--text-muted); margin-top:16px; line-height:1.5;
+}
+
+/* ===========================================
+   BADGE PILLS — BOUNCY ON HOVER
+   =========================================== */
+.badge-row { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; margin-top:28px; }
+.badge-pill {
+  display:inline-block; padding:10px 26px; border-radius:50px;
+  border:3px solid var(--text-dark); background:var(--butter);
+  font-family:var(--font-display); font-size:22px;
+  color:var(--text-dark); box-shadow:var(--shadow-small);
+  transition: transform 0.25s var(--ease-bounce), background 0.25s;
+  cursor:pointer;
+}
+.badge-pill:hover { transform: translateY(-6px) scale(1.08); }
+.badge-pill:active { transform: translateY(2px) scale(0.95); }
+
+/* ===========================================
+   FRAMED HEADER
+   =========================================== */
+.framed-header { max-width:900px; display:flex; flex-direction:column; }
+.framed-header .header-cap {
+  border:3px solid var(--text-dark); border-bottom:none;
+  border-radius:28px 28px 0 0; padding:28px 48px 20px;
+  box-shadow:var(--shadow-default);
+  transition: transform 0.3s var(--ease-bounce);
+}
+.framed-header:hover .header-cap { transform: translateY(-4px); }
+.framed-header .header-cap h2 {
+  font-family:var(--font-display); font-size:68px;
+  color:var(--white); text-shadow:var(--text-shadow-soft); line-height:1.2;
+}
+.framed-header .body-panel {
+  background:var(--white); border:3px solid var(--text-dark);
+  border-top:none; border-radius:0 0 28px 28px;
+  padding:32px 40px; box-shadow:var(--shadow-default);
+}
+.framed-header .body-panel p {
+  font-family:var(--font-body); font-size:30px; font-weight:500;
+  color:var(--text-dark); line-height:1.75; text-align:center;
+}
+
+/* ===========================================
+   SURFACE HEADLINE (on colored backgrounds)
+   =========================================== */
+.surface-headline h2 {
+  font-family:var(--font-display); font-size:68px;
+  color:var(--white); text-shadow:var(--text-shadow);
+  line-height:1.2; text-align:center; margin-bottom:20px;
+}
+
+/* ===========================================
+   CLICK-TO-REVEAL CARDS
+   =========================================== */
+.click-reveal-card {
+  background:var(--white); border:3px solid var(--text-dark);
+  border-radius:28px; box-shadow:var(--shadow-default);
+  padding:28px 40px 22px; text-align:center;
+  max-width:520px; flex:1;
+  transition: transform 0.35s var(--ease-bounce), box-shadow 0.35s;
+  cursor:pointer; position:relative; overflow:hidden;
+}
+.click-reveal-card:hover { transform: translateY(-8px); box-shadow: 10px 10px 0 var(--text-dark); }
+.click-reveal-card .card-front, .click-reveal-card .card-back {
+  transition: opacity 0.4s, transform 0.4s var(--ease-bounce);
+}
+.click-reveal-card .card-back { display:none; opacity:0; transform: scale(0.8); }
+.click-reveal-card.revealed .card-front { display:none; opacity:0; transform: scale(0.8); }
+.click-reveal-card.revealed .card-back { display:block; opacity:1; transform: scale(1); }
+.click-reveal-card .tap-hint {
+  display:inline-block; margin-top:8px;
+  font-family:var(--font-body); font-size:16px; font-weight:600;
+  color:var(--text-muted);
+  animation: pulse-hint 1.5s ease-in-out infinite;
+}
+@keyframes pulse-hint {
+  0%,100% { opacity:0.4; transform:scale(1); }
+  50% { opacity:1; transform:scale(1.1); }
+}
+.click-reveal-card .card-icon {
+  width:80px; height:80px; border-radius:50%;
+  border:3px solid var(--text-dark);
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px; font-size:44px;
+  box-shadow:var(--shadow-small);
+}
+.click-reveal-card .card-back .big-emoji {
+  font-size:100px; display:block; line-height:1.2;
+  animation: emoji-bounce 0.5s var(--ease-bounce) both;
+}
+@keyframes emoji-bounce {
+  0% { transform:scale(0); }
+  60% { transform:scale(1.2); }
+  100% { transform:scale(1); }
+}
+.click-reveal-card .card-back h3 {
+  font-family:var(--font-display); font-size:32px;
+  color:var(--text-dark); margin-top:8px;
+}
+.click-reveal-card .card-back p {
+  font-family:var(--font-body); font-size:20px; font-weight:600;
+  color:var(--text-muted); line-height:1.5; margin-top:6px;
+}
+.click-reveal-card h3 {
+  font-family:var(--font-display); font-size:36px;
+  color:var(--text-dark); line-height:1.3;
+}
+.click-reveal-card p.card-desc {
+  font-family:var(--font-body); font-size:20px; font-weight:600;
+  color:var(--text-muted); line-height:1.5; margin-top:6px;
+}
+
+/* ===========================================
+   CONSEQUENCE STACK — Click to reveal solution
+   =========================================== */
+.consequence-stack { display:flex; flex-direction:column; gap:20px; max-width:800px; }
+.consequence-item {
+  display:flex; align-items:center; gap:24px;
+  background:var(--white); border:3px solid var(--text-dark);
+  border-radius:20px; box-shadow:var(--shadow-small);
+  padding:20px 32px; cursor:pointer;
+  transition: transform 0.3s var(--ease-bounce), box-shadow 0.3s;
+}
+.consequence-item:hover { transform: translateX(8px); box-shadow: var(--shadow-default); }
+.consequence-item .con-emoji {
+  font-size:48px; flex-shrink:0;
+  transition: transform 0.3s var(--ease-bounce);
+}
+.consequence-item:hover .con-emoji { transform: scale(1.2) rotate(-10deg); }
+.consequence-item .con-text {
+  font-family:var(--font-body); font-size:28px; font-weight:600;
+  color:var(--text-dark); line-height:1.5; flex:1;
+}
+.consequence-item .con-reveal {
+  font-family:var(--font-body); font-size:20px; font-weight:600;
+  color:var(--coral); opacity:0; max-width:0; overflow:hidden;
+  white-space:nowrap; transition: all 0.5s var(--ease-bounce);
+}
+.consequence-item.revealed .con-reveal { opacity:1; max-width:400px; margin-left:12px; }
+
+/* ===========================================
+   STEP ROW — Thief catching
+   =========================================== */
+.step-row { display:flex; gap:36px; align-items:center; max-width:1050px; justify-content:center; }
+.step-box {
+  background:var(--white); border:3px solid var(--text-dark);
+  border-radius:28px; box-shadow:var(--shadow-default);
+  padding:24px 28px; text-align:center; max-width:260px; flex:1;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition: transform 0.35s var(--ease-bounce), box-shadow 0.35s;
+}
+.step-box:hover { transform: translateY(-10px); box-shadow: 10px 10px 0 var(--text-dark); }
+.step-box .step-circle {
+  width:80px; height:80px; border-radius:50%;
+  border:3px solid var(--text-dark);
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 14px; font-size:40px;
+  box-shadow:var(--shadow-small);
+  transition: transform 0.3s var(--ease-bounce);
+}
+.step-box:hover .step-circle { transform: scale(1.1) rotate(15deg); }
+.step-box .thief-badge {
+  position:absolute; top:-20px; right:-20px;
+  font-size:50px; opacity:0;
+  transition: all 0.4s var(--ease-bounce);
+}
+.step-box.caught .thief-badge { opacity:1; top:-10px; }
+.step-box h3 {
+  font-family:var(--font-display); font-size:26px;
+  color:var(--text-dark); line-height:1.3;
+}
+.step-box p {
+  font-family:var(--font-body); font-size:19px; font-weight:500;
+  color:var(--text-muted); line-height:1.5; margin-top:6px;
+}
+.step-arrow { font-family:var(--font-display); font-size:48px; color:var(--text-dark); }
+
+/* ===========================================
+   GIFT CARDS
+   =========================================== */
+.card-row { display:flex; gap:32px; max-width:1120px; justify-content:center; }
+.gift-card {
+  background:var(--white); border:3px solid var(--text-dark);
+  border-radius:28px; box-shadow:var(--shadow-default);
+  padding:32px 28px; text-align:center; flex:1; max-width:320px;
+  cursor:pointer;
+  transition: transform 0.4s var(--ease-bounce), box-shadow 0.4s;
+}
+.gift-card:hover { transform: translateY(-12px) rotate(-2deg); box-shadow: 10px 10px 0 var(--text-dark); }
+.gift-card .gift-emoji {
+  font-size:72px; display:block; line-height:1.2;
+  transition: transform 0.4s var(--ease-bounce);
+}
+.gift-card:hover .gift-emoji { transform: scale(1.2) rotate(10deg); }
+.gift-card .gift-badge {
+  display:inline-block; padding:6px 18px; border-radius:50px;
+  border:3px solid var(--text-dark); font-family:var(--font-display);
+  font-size:18px; margin:10px 0;
+}
+.gift-card h3 {
+  font-family:var(--font-display); font-size:30px;
+  color:var(--text-dark); line-height:1.3; margin-bottom:6px;
+}
+.gift-card p {
+  font-family:var(--font-body); font-size:18px; font-weight:500;
+  color:var(--text-muted); line-height:1.55;
+}
+
+/* ===========================================
+   BIG QUOTE — closing slide
+   =========================================== */
+.big-quote { max-width:850px; text-align:center; }
+.big-quote .quote-mark {
+  font-family:var(--font-display); font-size:100px;
+  color:var(--soft-pink); line-height:0.6; margin-bottom:10px;
+}
+.big-quote h2 {
+  font-family:var(--font-display); font-size:64px;
+  color:var(--text-dark); line-height:1.25;
+}
+.big-quote .tagline {
+  font-family:var(--font-body); font-size:26px; font-weight:600;
+  color:var(--text-muted); margin-top:20px; line-height:1.6;
+}
+
+/* ===========================================
+   CONFETTI PARTICLES
+   =========================================== */
+.confetti-piece {
+  position:fixed; z-index:99999; pointer-events:none;
+  animation: confetti-fall 2s ease-out forwards;
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity:1; }
+  100% { transform: translateY(100vh) rotate(720deg) scale(0); opacity:0; }
+}
+
+/* ===========================================
+   FLOATING DECORATION ANIMATIONS
+   =========================================== */
+@keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-14px) rotate(4deg); } }
+@keyframes wiggle { 0%,100% { transform:rotate(0deg); } 25% { transform:rotate(-5deg); } 75% { transform:rotate(5deg); } }
+@keyframes pop-in {
+  0% { transform:scale(0) rotate(-180deg); opacity:0; }
+  70% { transform:scale(1.15) rotate(10deg); opacity:1; }
+  100% { transform:scale(1) rotate(0deg); opacity:1; }
+}
+.decor-float { animation: float 4.5s ease-in-out infinite; }
+.decor-float:nth-child(2) { animation-delay: 0.8s; }
+.decor-float:nth-child(3) { animation-delay: 1.6s; }
+.decor-float:nth-child(4) { animation-delay: 2.4s; }
+.decor-float:nth-child(5) { animation-delay: 3.2s; }
+
+/* ===========================================
+   REVEAL ANIMATIONS
+   =========================================== */
+.reveal { opacity:0; transform:translateY(40px); transition: opacity 0.7s var(--ease-bounce), transform 0.7s var(--ease-bounce); }
+.slide.visible .reveal { opacity:1; transform:translateY(0); }
+.slide.visible .d1 { transition-delay:0.08s; }
+.slide.visible .d2 { transition-delay:0.18s; }
+.slide.visible .d3 { transition-delay:0.28s; }
+.slide.visible .d4 { transition-delay:0.38s; }
+.slide.visible .d5 { transition-delay:0.50s; }
+.slide.visible .d6 { transition-delay:0.62s; }
+
+/* ===========================================
+   NAVIGATION DOTS
+   =========================================== */
+.nav-dots { position:fixed; right:28px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:14px; z-index:1000; }
+.nav-dot {
+  width:14px; height:14px; border-radius:50%;
+  border:2px solid var(--text-dark); background:transparent;
+  cursor:pointer; transition: background 0.3s, transform 0.3s var(--ease-bounce);
+}
+.nav-dot:hover { transform:scale(1.3); }
+.nav-dot.active { background:var(--butter); transform:scale(1.3); }
+
+/* ===========================================
+   SLIDE COUNTER
+   =========================================== */
+.slide-counter {
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+  background:var(--white); border:3px solid var(--text-dark);
+  border-radius:50px; padding:8px 24px;
+  font-family:var(--font-display); font-size:18px;
+  color:var(--text-dark); box-shadow:var(--shadow-small); z-index:1000;
+}
+
+/* ===========================================
+   COVER FLIP TRANSITION
+   =========================================== */
+.slide.flip-out {
+  animation: flip-out 0.45s ease-in forwards;
+}
+.slide.flip-in {
+  animation: flip-in 0.45s ease-out forwards;
+}
+@keyframes flip-out {
+  0% { transform:perspective(1200px) rotateY(0deg); opacity:1; }
+  100% { transform:perspective(1200px) rotateY(-90deg); opacity:0; }
+}
+@keyframes flip-in {
+  0% { transform:perspective(1200px) rotateY(90deg); opacity:0; }
+  100% { transform:perspective(1200px) rotateY(0deg); opacity:1; }
+}
+
+/* ===========================================
+   STAR RATING BAR (progress)
+   =========================================== */
+.progress-stars {
+  position:fixed; top:20px; right:80px;
+  display:flex; gap:8px; z-index:1000;
+}
+.progress-star {
+  font-size:28px;
+  transition: transform 0.4s var(--ease-bounce), opacity 0.4s;
+  opacity:0.3; transform:scale(0.7);
+}
+.progress-star.earned { opacity:1; transform:scale(1); animation: pop-in 0.4s var(--ease-bounce); }
+
+/* ===========================================
+   INLINE EDITING
+   =========================================== */
+.edit-hotzone { position:fixed; top:0; left:0; width:80px; height:80px; z-index:10000; }
+.edit-toggle {
+  position:fixed; top:12px; left:12px; opacity:0; pointer-events:none;
+  transition:opacity 0.3s ease; z-index:10001;
+  width:42px; height:42px; border-radius:50%;
+  border:3px solid var(--text-dark); background:var(--white);
+  font-size:20px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow-small);
+}
+.edit-toggle.show, .edit-toggle.active { opacity:1; pointer-events:auto; }
+[contenteditable="true"] { outline:2px dashed var(--coral); outline-offset:4px; cursor:text; }
+
+/* ===========================================
+   SURPRISE BOUNCE ELEMENT
+   =========================================== */
+@keyframes drop-bounce {
+  0% { transform:translateY(-600px); }
+  50% { transform:translateY(20px); }
+  65% { transform:translateY(-40px); }
+  80% { transform:translateY(10px); }
+  90% { transform:translateY(-15px); }
+  100% { transform:translateY(0); }
+}
+.drop-in { animation: drop-bounce 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+</style>
+</head>
+<body>
+
+<!-- ===========================================
+     CUSTOM CURSOR ELEMENT
+     =========================================== -->
+<div id="cursor-dot"></div>
+
+<!-- ===========================================
+     PROGRESS STARS
+     =========================================== -->
+<div class="progress-stars" id="progressStars">
+  <span class="progress-star" data-index="0">⭐</span>
+  <span class="progress-star" data-index="1">⭐</span>
+  <span class="progress-star" data-index="2">⭐</span>
+  <span class="progress-star" data-index="3">⭐</span>
+  <span class="progress-star" data-index="4">⭐</span>
+  <span class="progress-star" data-index="5">⭐</span>
+  <span class="progress-star" data-index="6">⭐</span>
+  <span class="progress-star" data-index="7">⭐</span>
+</div>
+
+<!-- ===========================================
+     NAVIGATION DOTS
+     =========================================== -->
+<nav class="nav-dots" id="navDots" aria-label="Slide navigation"></nav>
+<div class="slide-counter" id="slideCounter">1 / 8</div>
+
+<!-- ===========================================
+     INLINE EDITING
+     =========================================== -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" aria-label="Edit mode">✏️</button>
+
+<!-- ===========================================
+     DECK VIEWPORT
+     =========================================== -->
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
+
+    <!-- ===== SLIDE 1: TITLE ===== -->
+    <section class="slide slide-bg-cream active" data-slide="0">
+      <svg class="decor decor-float" style="left:50px;top:-30px;width:130px;height:130px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="16" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(120 50 50)"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(240 50 50)"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(300 50 50)"/>
+      </svg>
+      <svg class="decor decor-float" style="right:80px;top:40px;width:70px;height:70px;" viewBox="0 0 48 48">
+        <polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5"/>
+      </svg>
+      <svg class="decor decor-float" style="left:180px;bottom:60px;width:80px;height:80px;" viewBox="0 0 48 48">
+        <polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5"/>
+      </svg>
+      <svg class="decor decor-float" style="right:50px;bottom:-20px;width:140px;height:140px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="16" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(90 50 50)"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="20" rx="11" ry="18" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(270 50 50)"/>
+      </svg>
+      <svg class="decor decor-float" style="right:280px;bottom:100px;width:50px;height:50px;" viewBox="0 0 48 48">
+        <polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="2.5"/>
+      </svg>
+
+      <div class="content">
+        <div class="hero-card reveal drop-in d1" onclick="burstConfetti(event)" title="点我试试！">
+          <h1>做时间的<span class="accent">小主人</span></h1>
+          <p class="subtitle">学会管理时间，让每一天都闪闪发光！</p>
+        </div>
+        <div class="badge-row reveal d2">
+          <span class="badge-pill" onclick="presentation.showSlide(1)">为什么重要？</span>
+          <span class="badge-pill" style="background:var(--turquoise);" onclick="presentation.showSlide(3)">时间去哪了？</span>
+          <span class="badge-pill" style="background:var(--soft-pink);" onclick="presentation.showSlide(6)">我能得到什么？</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 2: WHY — Click to Reveal ===== -->
+    <section class="slide slide-bg-pink" data-slide="1">
+      <svg class="decor decor-float" style="left:-20px;top:-20px;width:90px;height:90px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="14" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(120 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(240 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(300 50 50)"/>
+      </svg>
+      <svg class="decor decor-float" style="right:40px;top:60px;width:60px;height:60px;" viewBox="0 0 48 48">
+        <polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+      </svg>
+      <svg class="decor decor-float" style="right:200px;bottom:40px;width:50px;height:50px;" viewBox="0 0 48 48">
+        <polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="2.5"/>
+      </svg>
+      <svg class="decor decor-float" style="left:100px;bottom:-20px;width:100px;height:100px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="14" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(72 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(144 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(216 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(288 50 50)"/>
+      </svg>
+
+      <div class="content">
+        <div class="framed-header reveal d1">
+          <div class="header-cap" style="background:var(--coral);">
+            <h2>为什么我们要管理好时间？</h2>
+          </div>
+          <div class="body-panel">
+            <p>每个人一天都有 <span style="font-family:var(--font-display);color:var(--coral);font-size:44px;">24</span> 个小时，就像一罐魔法糖果，吃一颗就少一颗。学会分配糖果，才能让每一天都甜甜的！</p>
+          </div>
+        </div>
+
+        <!-- Click-to-reveal cards -->
+        <div class="card-row reveal d2" style="margin-top:32px;max-width:1100px;">
+          <div class="click-reveal-card" onclick="revealCard(this)">
+            <div class="card-front">
+              <div class="card-icon" style="background:var(--butter);">🍬</div>
+              <h3>一天有24颗糖</h3>
+              <p class="card-desc">每颗都是独一无二的</p>
+              <span class="tap-hint">👆 点我看看</span>
+            </div>
+            <div class="card-back">
+              <span class="big-emoji">🕐</span>
+              <h3>时间过去了就回不来</h3>
+              <p>就像吃掉的糖不能再吐出来，浪费的时间也不能倒流哦！</p>
+            </div>
+          </div>
+          <div class="click-reveal-card" onclick="revealCard(this)">
+            <div class="card-front">
+              <div class="card-icon" style="background:var(--mint);">🎯</div>
+              <h3>想做的事情太多</h3>
+              <p class="card-desc">必须学会选择</p>
+              <span class="tap-hint">👆 点我看看</span>
+            </div>
+            <div class="card-back">
+              <span class="big-emoji">🏆</span>
+              <h3>先完成重要的事</h3>
+              <p>写完作业再玩，玩的时候才最开心最踏实！</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 3: CONSEQUENCES — Click to Reveal Solutions ===== -->
+    <section class="slide slide-bg-mint" data-slide="2">
+      <svg class="decor decor-float" style="left:30px;top:-20px;width:80px;height:80px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:50px;top:40px;width:90px;height:90px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="14" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(120 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(240 50 50)"/>
+      </svg>
+      <svg class="decor decor-float" style="right:260px;bottom:50px;width:55px;height:55px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="left:180px;bottom:-10px;width:65px;height:65px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+
+      <div class="content">
+        <div class="surface-headline reveal d1" style="margin-bottom:20px;">
+          <h2 style="text-shadow:var(--text-shadow-soft);">不好好管理时间会怎样？</h2>
+        </div>
+        <p class="reveal d1" style="font-family:var(--font-body);font-size:22px;font-weight:600;color:rgba(45,45,45,0.6);margin-bottom:16px;">点击每张卡片，看看会发生什么 👇</p>
+        <div class="consequence-stack">
+          <div class="consequence-item reveal d2" onclick="revealConsequence(this)">
+            <span class="con-emoji">😰</span>
+            <span class="con-text">作业拖到最后一刻，急急忙忙写不完</span>
+            <span class="con-reveal">→ 早点开始，写得又快又好！✅</span>
+          </div>
+          <div class="consequence-item reveal d3" onclick="revealConsequence(this)">
+            <span class="con-emoji">😴</span>
+            <span class="con-text">睡觉时间不够，第二天上课没精神</span>
+            <span class="con-reveal">→ 安排好时间，睡得饱饱哒！💤</span>
+          </div>
+          <div class="consequence-item reveal d4" onclick="revealConsequence(this)">
+            <span class="con-emoji">😢</span>
+            <span class="con-text">想玩的时候发现时间全被浪费了</span>
+            <span class="con-reveal">→ 先写作业再玩，玩得更痛快！🎉</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 4: HOW TIME SLIPS AWAY ===== -->
+    <section class="slide slide-bg-sky" data-slide="3">
+      <svg class="decor decor-float" style="left:40px;top:30px;width:70px;height:70px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:60px;top:50px;width:130px;height:70px;" viewBox="0 0 160 90">
+        <ellipse cx="55" cy="55" rx="38" ry="26" fill="#fff" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="95" cy="48" rx="42" ry="28" fill="#fff" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="130" cy="56" rx="30" ry="20" fill="#fff" stroke="#2D2D2D" stroke-width="2.5"/>
+      </svg>
+      <svg class="decor decor-float" style="left:120px;bottom:60px;width:60px;height:60px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:30px;bottom:-10px;width:100px;height:100px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="14" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(72 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(144 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(216 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(288 50 50)"/>
+      </svg>
+
+      <div class="content">
+        <div class="framed-header reveal d1">
+          <div class="header-cap" style="background:var(--sky);">
+            <h2 style="text-shadow:var(--text-shadow);">时间是如何不知不觉流逝的？</h2>
+          </div>
+          <div class="body-panel">
+            <p>你有没有发现：明明只想看五分钟手机，一抬头两个小时过去了？<br>时间就像小河里的水，悄悄流走你却不知道——<br><span style="font-family:var(--font-display);color:var(--coral);font-size:36px;">但我们可以学会发现它在哪儿溜走的！</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 5: TIME THIEVES — Catch them! ===== -->
+    <section class="slide slide-bg-butter" data-slide="4">
+      <svg class="decor decor-float" style="left:-10px;top:20px;width:80px;height:80px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:60px;top:-10px;width:90px;height:90px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="14" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(120 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(240 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(300 50 50)"/>
+      </svg>
+      <svg class="decor decor-float" style="left:200px;bottom:40px;width:55px;height:55px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:30px;bottom:-10px;width:100px;height:100px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="14" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(72 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(144 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(216 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(288 50 50)"/>
+      </svg>
+
+      <div class="content">
+        <div class="surface-headline reveal d1" style="margin-bottom:10px;">
+          <h2 style="color:var(--text-dark);text-shadow:none;">时间小偷大揭秘！🕵️</h2>
+        </div>
+        <p class="reveal d1" style="font-family:var(--font-body);font-size:20px;font-weight:600;color:rgba(45,45,45,0.55);margin-bottom:28px;">快点击这三个小偷，把它们抓住！👆</p>
+        <div class="step-row">
+          <div class="step-box reveal d2" onclick="catchThief(this)">
+            <div class="step-circle" style="background:var(--coral);">📱</div>
+            <div class="thief-badge">🚫</div>
+            <h3>屏幕陷阱</h3>
+            <p>短视频、动画片、游戏——被设计成让你停不下来</p>
+          </div>
+          <span class="step-arrow reveal d3">→</span>
+          <div class="step-box reveal d3" onclick="catchThief(this)">
+            <div class="step-circle" style="background:var(--mint);">💭</div>
+            <div class="thief-badge">🚫</div>
+            <h3>发呆磨蹭</h3>
+            <p>"再做五分钟"说了一百遍，拖成两小时</p>
+          </div>
+          <span class="step-arrow reveal d4">→</span>
+          <div class="step-box reveal d4" onclick="catchThief(this)">
+            <div class="step-circle" style="background:var(--sky);">🎮</div>
+            <div class="thief-badge">🚫</div>
+            <h3>不分主次</h3>
+            <p>作业没写完就开始拼乐高，两样都没做好</p>
+          </div>
+        </div>
+        <p id="thief-counter" class="reveal d5" style="font-family:var(--font-body);font-size:24px;font-weight:600;color:var(--text-dark);margin-top:24px;background:var(--white);display:inline-block;padding:12px 32px;border:3px solid var(--text-dark);border-radius:50px;box-shadow:var(--shadow-small);">已抓住 <span style="font-family:var(--font-display);color:var(--coral);font-size:32px;">0/3</span> 个小偷</p>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 6: WHAT WE GAIN ===== -->
+    <section class="slide slide-bg-lavender" data-slide="5">
+      <svg class="decor decor-float" style="left:40px;top:-20px;width:90px;height:90px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="14" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(120 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(240 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(300 50 50)"/>
+      </svg>
+      <svg class="decor decor-float" style="right:30px;top:80px;width:60px;height:60px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="left:100px;bottom:50px;width:55px;height:55px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:180px;bottom:-10px;width:80px;height:80px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+
+      <div class="content">
+        <div class="framed-header reveal d1">
+          <div class="header-cap" style="background:var(--lavender);">
+            <h2 style="text-shadow:var(--text-shadow-soft);">管好时间，我们能得到什么？</h2>
+          </div>
+          <div class="body-panel">
+            <p>当你学会做时间的小主人，世界就会变成你的游乐场——<br><span style="font-family:var(--font-display);color:var(--coral);font-size:36px;">快乐不减少，反而会翻倍</span>哦！</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 7: THREE GIFTS — Click for confetti ===== -->
+    <section class="slide slide-bg-turquoise" data-slide="6">
+      <svg class="decor decor-float" style="left:20px;top:40px;width:65px;height:65px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:40px;top:-10px;width:85px;height:85px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="left:200px;bottom:30px;width:55px;height:55px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:200px;bottom:-10px;width:70px;height:70px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#FFCBA4" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+
+      <div class="content">
+        <div class="surface-headline reveal d1" style="margin-bottom:36px;">
+          <h2 style="text-shadow:var(--text-shadow);">成为时间小主人的<br>三个超棒礼物</h2>
+        </div>
+        <div class="card-row">
+          <div class="gift-card reveal d2" onclick="burstConfetti(event)" style="animation-delay:0.18s;">
+            <span class="gift-emoji">🎮</span>
+            <span class="gift-badge" style="background:var(--coral);color:var(--white);">礼物一</span>
+            <h3>更多的玩耍时间</h3>
+            <p>先把该做的事情做完，想玩什么就玩什么！</p>
+          </div>
+          <div class="gift-card reveal d3" onclick="burstConfetti(event)" style="animation-delay:0.28s;">
+            <span class="gift-emoji">😊</span>
+            <span class="gift-badge" style="background:var(--mint);">礼物二</span>
+            <h3>每天都很轻松</h3>
+            <p>不用赶作业到深夜，心里也轻轻松松</p>
+          </div>
+          <div class="gift-card reveal d4" onclick="burstConfetti(event)" style="animation-delay:0.38s;">
+            <span class="gift-emoji">🚀</span>
+            <span class="gift-badge" style="background:var(--sky);">礼物三</span>
+            <h3>变成更厉害的人</h3>
+            <p>钢琴画画运动都进步——因为你给每件事都留了时间！</p>
+          </div>
+        </div>
+        <p class="reveal d5" style="font-family:var(--font-body);font-size:18px;font-weight:600;color:rgba(255,255,255,0.7);margin-top:20px;">点击礼物盒，会有惊喜哦！🎁</p>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 8: CLOSING ===== -->
+    <section class="slide slide-bg-cream" data-slide="7">
+      <svg class="decor decor-float" style="left:60px;top:-20px;width:110px;height:110px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="16" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="11" ry="18" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="11" ry="18" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="19" rx="11" ry="18" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(120 50 50)"/>
+        <ellipse cx="50" cy="19" rx="11" ry="18" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="19" rx="11" ry="18" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(240 50 50)"/>
+        <ellipse cx="50" cy="19" rx="11" ry="18" fill="#F7C8D4" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(300 50 50)"/>
+      </svg>
+      <svg class="decor decor-float" style="right:80px;top:50px;width:70px;height:70px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="left:200px;bottom:80px;width:60px;height:60px;" viewBox="0 0 48 48"><polygon points="24,2 29,15 43,15 32,22 36,36 24,28 12,36 16,22 5,15 19,15" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="2.5"/></svg>
+      <svg class="decor decor-float" style="right:60px;bottom:-20px;width:120px;height:120px;" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="14" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2.5"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(0 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(72 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(144 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(216 50 50)"/>
+        <ellipse cx="50" cy="19" rx="9" ry="15" fill="#fff" stroke="#2D2D2D" stroke-width="2.5" transform="rotate(288 50 50)"/>
+      </svg>
+
+      <div class="content">
+        <div class="big-quote reveal d1">
+          <div class="quote-mark">"</div>
+          <h2>每一天都是一份礼物，<br>你是拆礼物的小主人</h2>
+          <p class="tagline">从今天起，先完成该做的事，再尽情做想做的事<br>你会发现——原来管理时间，就是让快乐翻倍的魔法！</p>
+        </div>
+        <div class="badge-row reveal d2" style="margin-top:36px;">
+          <span class="badge-pill" onclick="burstConfetti(event)">先做该做的 ✅</span>
+          <span class="badge-pill" style="background:var(--turquoise);" onclick="burstConfetti(event)">再做想做的 🎨</span>
+          <span class="badge-pill" style="background:var(--soft-pink);" onclick="burstConfetti(event)">每天都很棒 🌟</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.totalSlides = this.slides.length;
+    this.currentSlide = 0;
+    this.stage = document.getElementById('deckStage');
+    this.counter = document.getElementById('slideCounter');
+    this.navDots = document.getElementById('navDots');
+    this.isTransitioning = false;
+
+    this.setupStageScale();
+    this.setupNavDots();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.showSlide(0);
+    window.presentation = this;
+  }
+
+  setupStageScale() {
+    const scale = () => {
+      const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const x = (window.innerWidth - 1920 * factor) / 2;
+      const y = (window.innerHeight - 1080 * factor) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+    };
+    scale();
+    window.addEventListener('resize', scale);
+  }
+
+  setupNavDots() {
+    for (let i = 0; i < this.totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'nav-dot';
+      dot.setAttribute('aria-label', `Page ${i + 1}`);
+      dot.addEventListener('click', () => this.showSlide(i));
+      this.navDots.appendChild(dot);
+    }
+  }
+
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.getAttribute('contenteditable')) return;
+      const keys = ['ArrowRight', 'ArrowDown', ' ', 'PageDown'];
+      const backKeys = ['ArrowLeft', 'ArrowUp', 'PageUp'];
+      if (keys.includes(e.key)) { e.preventDefault(); this.nextSlide(); }
+      else if (backKeys.includes(e.key)) { e.preventDefault(); this.prevSlide(); }
+      else if (e.key === 'Home') { e.preventDefault(); this.showSlide(0); }
+      else if (e.key === 'End') { e.preventDefault(); this.showSlide(this.totalSlides - 1); }
+    });
+  }
+
+  setupTouchNav() {
+    let startY = 0, startX = 0;
+    document.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      const dy = e.changedTouches[0].clientY - startY;
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > Math.abs(dy)) return;
+      if (dy < -50) this.nextSlide();
+      else if (dy > 50) this.prevSlide();
+    });
+  }
+
+  setupWheelNav() {
+    let wheelTimeout;
+    document.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (wheelTimeout) return;
+      wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 800);
+      if (e.deltaY > 0) this.nextSlide();
+      else if (e.deltaY < 0) this.prevSlide();
+    }, { passive: false });
+  }
+
+  showSlide(index) {
+    const newIndex = Math.max(0, Math.min(index, this.totalSlides - 1));
+    if (newIndex === this.currentSlide || this.isTransitioning) return;
+    this.isTransitioning = true;
+
+    const oldSlide = this.slides[this.currentSlide];
+    const newSlide = this.slides[newIndex];
+
+    // Remove old active state
+    oldSlide.classList.remove('active', 'visible');
+
+    // Add new active state with flip animation
+    newSlide.classList.add('active', 'visible');
+
+    this.currentSlide = newIndex;
+
+    // Update counter
+    this.counter.textContent = `${this.currentSlide + 1} / ${this.totalSlides}`;
+
+    // Update nav dots
+    const dots = this.navDots.querySelectorAll('.nav-dot');
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === this.currentSlide));
+
+    // Update progress stars
+    this.updateProgressStars();
+
+    setTimeout(() => { this.isTransitioning = false; }, 500);
+  }
+
+  updateProgressStars() {
+    const stars = document.querySelectorAll('.progress-star');
+    stars.forEach((star, i) => {
+      if (i <= this.currentSlide) {
+        star.classList.add('earned');
+      } else {
+        star.classList.remove('earned');
+      }
+    });
+  }
+
+  nextSlide() { this.showSlide(this.currentSlide + 1); }
+  prevSlide() { this.showSlide(this.currentSlide - 1); }
+}
+
+const presentation = new SlidePresentation();
+presentation.updateProgressStars();
+
+/* ===========================================
+   CUSTOM CURSOR
+   =========================================== */
+const cursorDot = document.getElementById('cursor-dot');
+let mouseX = -100, mouseY = -100;
+let cursorX = -100, cursorY = -100;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+
+  // Spawn trail particles
+  if (Math.random() < 0.4) {
+    spawnTrailParticle(mouseX, mouseY);
+  }
+});
+
+function animateCursor() {
+  // Smooth follow with spring easing
+  const dx = mouseX - cursorX;
+  const dy = mouseY - cursorY;
+  cursorX += dx * 0.25;
+  cursorY += dy * 0.25;
+  cursorDot.style.left = cursorX + 'px';
+  cursorDot.style.top = cursorY + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// Click effect
+document.addEventListener('mousedown', () => cursorDot.classList.add('clicking'));
+document.addEventListener('mouseup', () => cursorDot.classList.remove('clicking'));
+
+// Hover effect on interactive elements
+document.addEventListener('mouseover', (e) => {
+  const target = e.target.closest('.click-reveal-card, .consequence-item, .step-box, .gift-card, .badge-pill, .hero-card');
+  if (target) cursorDot.classList.add('hover-card');
+});
+document.addEventListener('mouseout', (e) => {
+  const target = e.target.closest('.click-reveal-card, .consequence-item, .step-box, .gift-card, .badge-pill, .hero-card');
+  if (target) cursorDot.classList.remove('hover-card');
+});
+
+function spawnTrailParticle(x, y) {
+  const particle = document.createElement('div');
+  particle.className = 'cursor-particle';
+  const colors = ['#F8635F', '#FDE68A', '#7ECDC0', '#F7C8D4', '#A8E6CF', '#D4A5E8', '#A8D8F0', '#FFCBA4'];
+  const size = 4 + Math.random() * 8;
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  particle.style.cssText = `
+    left:${x + (Math.random()-0.5)*16}px;
+    top:${y + (Math.random()-0.5)*16}px;
+    width:${size}px; height:${size}px;
+    background:${color};
+    border:1.5px solid #2D2D2D;
+  `;
+  document.body.appendChild(particle);
+  setTimeout(() => particle.remove(), 700);
+}
+
+/* ===========================================
+   CLICK BURST ON CLICK ANYWHERE
+   =========================================== */
+document.addEventListener('click', (e) => {
+  const burst = document.createElement('div');
+  burst.className = 'click-burst';
+  burst.style.cssText = `
+    left:${e.clientX}px;
+    top:${e.clientY}px;
+    border:2px solid var(--text-dark);
+    background:rgba(253,232,138,0.3);
+  `;
+  document.body.appendChild(burst);
+  setTimeout(() => burst.remove(), 600);
+});
+
+/* ===========================================
+   CONFETTI BURST
+   =========================================== */
+function burstConfetti(e) {
+  if (e) e.stopPropagation();
+  const cx = e ? e.clientX : window.innerWidth / 2;
+  const cy = e ? e.clientY : window.innerHeight / 2;
+  const colors = ['#F8635F', '#FDE68A', '#7ECDC0', '#F7C8D4', '#A8E6CF', '#D4A5E8', '#A8D8F0', '#FFCBA4'];
+  const shapes = ['●', '★', '♦', '▲', '❤', '⬟'];
+
+  for (let i = 0; i < 30; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const shape = shapes[Math.floor(Math.random() * shapes.length)];
+    const size = 10 + Math.random() * 16;
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 60 + Math.random() * 160;
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance - 80;
+    const spin = 360 + Math.random() * 720;
+    const sign = Math.random() > 0.5 ? 1 : -1;
+
+    piece.style.cssText = `
+      left:${cx}px; top:${cy}px;
+      font-size:${size}px; color:${color};
+      --tx:${tx}px; --ty:${ty}px; --spin:${spin * sign}deg;
+    `;
+    piece.textContent = shape;
+    piece.style.animation = 'none';
+    piece.offsetHeight; // trigger reflow
+    piece.style.animation = `confetti-fall 2s ease-out forwards`;
+
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 2000);
+  }
+}
+
+/* ===========================================
+   CLICK-TO-REVEAL CARD
+   =========================================== */
+function revealCard(card) {
+  if (card.classList.contains('revealed')) {
+    card.classList.remove('revealed');
+  } else {
+    card.classList.add('revealed');
+    burstConfetti({ clientX: card.getBoundingClientRect().left + card.offsetWidth / 2, clientY: card.getBoundingClientRect().top + card.offsetHeight / 2, stopPropagation: () => {} });
+  }
+}
+
+/* ===========================================
+   CONSEQUENCE REVEAL
+   =========================================== */
+function revealConsequence(item) {
+  item.classList.toggle('revealed');
+}
+
+/* ===========================================
+   CATCH THIEF
+   =========================================== */
+let thievesCaught = 0;
+function catchThief(box) {
+  if (box.classList.contains('caught')) return;
+  box.classList.add('caught');
+  thievesCaught++;
+  const counter = document.getElementById('thief-counter');
+  if (counter) {
+    counter.querySelector('span').textContent = `${thievesCaught}/3`;
+  }
+  burstConfetti({
+    clientX: box.getBoundingClientRect().left + box.offsetWidth / 2,
+    clientY: box.getBoundingClientRect().top + box.offsetHeight / 2,
+    stopPropagation: () => {}
+  });
+  if (thievesCaught >= 3) {
+    setTimeout(() => {
+      const counter = document.getElementById('thief-counter');
+      if (counter) {
+        counter.innerHTML = '🎉 太棒了！你抓住了所有时间小偷！你是时间小侦探！🕵️‍♂️';
+        counter.style.background = 'var(--coral)';
+        counter.style.color = 'var(--white)';
+      }
+    }, 600);
+  }
+}
+
+/* ===========================================
+   INLINE EDITING
+   =========================================== */
+class InlineEditor {
+  constructor() {
+    this.isActive = false;
+    this.editToggle = document.getElementById('editToggle');
+    this.hotzone = document.getElementById('editHotzone');
+    this.setupEditToggle();
+    this.setupKeyboardShortcut();
+  }
+
+  setupEditToggle() {
+    let hideTimeout = null;
+    this.hotzone.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+      this.editToggle.classList.add('show');
+    });
+    this.hotzone.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => {
+        if (!this.isActive) this.editToggle.classList.remove('show');
+      }, 400);
+    });
+    this.editToggle.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+    this.editToggle.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => {
+        if (!this.isActive) this.editToggle.classList.remove('show');
+      }, 400);
+    });
+    this.hotzone.addEventListener('click', () => this.toggleEditMode());
+    this.editToggle.addEventListener('click', () => this.toggleEditMode());
+  }
+
+  setupKeyboardShortcut() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable') && !e.ctrlKey && !e.metaKey) {
+        this.toggleEditMode();
+      }
+    });
+  }
+
+  toggleEditMode() {
+    this.isActive = !this.isActive;
+    if (this.isActive) {
+      this.editToggle.classList.add('active');
+      this.editToggle.textContent = '💾';
+    } else {
+      this.editToggle.classList.remove('active');
+      this.editToggle.textContent = '✏️';
+    }
+    const editableSelectors = '.hero-card h1, .hero-card .subtitle, .framed-header h2, .framed-header p, .click-reveal-card h3, .click-reveal-card p, .step-box h3, .step-box p, .gift-card h3, .gift-card p, .big-quote h2, .big-quote .tagline, .surface-headline h2, .consequence-item .con-text, .badge-pill';
+    document.querySelectorAll(editableSelectors).forEach(el => {
+      el.setAttribute('contenteditable', this.isActive);
+    });
+    if (this.isActive) {
+      this.saveHandler = (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          localStorage.setItem('slides-edit-backup', document.querySelector('.deck-stage').innerHTML);
+          const msg = document.createElement('div');
+          msg.textContent = 'Saved! ✓';
+          msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--white);border:3px solid var(--text-dark);border-radius:50px;padding:10px 28px;font-family:var(--font-body);font-size:18px;font-weight:600;color:var(--text-dark);z-index:99999;box-shadow:var(--shadow-small);';
+          document.body.appendChild(msg);
+          setTimeout(() => msg.remove(), 2000);
+        }
+      };
+      document.addEventListener('keydown', this.saveHandler);
+    } else {
+      if (this.saveHandler) document.removeEventListener('keydown', this.saveHandler);
+    }
+  }
+}
+
+new InlineEditor();
+
+/* ===========================================
+   PAGE LOAD ANIMATION
+   =========================================== */
+window.addEventListener('load', () => {
+  document.querySelectorAll('.slide-bg-cream .decor-float').forEach((el, i) => {
+    el.style.animationDelay = `${i * 0.2}s`;
+  });
+});
+</script>
+</body>
+</html>

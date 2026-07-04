@@ -55,19 +55,9 @@ layout: base.njk
     <h2 class="section-title" lang="en">{{ site.blogTitle.en }}</h2>
     <h2 class="section-title" lang="zh">{{ site.blogTitle.zh }}</h2>
     <ul class="blog-list">
-      <li class="blog-item">
-        <h3><a href="/time-class.html">⏰ 时间管理小课堂</a></h3>
-        <div class="blog-date">2026-07-03</div>
-        <p class="blog-excerpt">交互式演示文稿：时间管理方法与技巧，帮助高效规划每一天。</p>
-      </li>
-      <li class="blog-item">
-        <h3><a href="/modern-ai-architecture.html">🤖 现代AI应用架构 · 教学演示</a></h3>
-        <div class="blog-date">2026-07-04</div>
-        <p class="blog-excerpt">深入讲解现代AI应用的分层架构设计，从推理引擎到AI代理的完整技术栈。</p>
-      </li>
       {% for post in collections.posts %}
       <li class="blog-item">
-        <h3><a href="#" lang="en">{{ post.data.title_en }}</a><a href="#" lang="zh">{{ post.data.title_zh }}</a></h3>
+        <h3><a href="{{ post.url }}" lang="en">{{ post.data.title_en }}</a><a href="{{ post.url }}" lang="zh">{{ post.data.title_zh }}</a></h3>
         <div class="blog-date">{{ post.data.date | formatDate }}</div>
         <p class="blog-excerpt" lang="en">{{ post.data.excerpt_en }}</p>
         <p class="blog-excerpt" lang="zh">{{ post.data.excerpt_zh }}</p>
